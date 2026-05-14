@@ -1,0 +1,29 @@
+# Copyright (C) 2024 Farmpro / Scott Lee
+
+printf "\n\n===[ Omega Setup Batch 2 ]==================="
+printf "\n>>  Setup fstab"
+
+printf "\n df -h  --> show file systems\n"
+df -h
+ls /mnt/mmcblk0p1
+
+printf "\n*** Press enter to continue... ***"
+read -p " "
+
+printf "\n opkg update --> check package update\n"
+opkg update
+
+printf "\n opkg install block-mount --> package install\n"
+opkg install block-mount
+
+printf "\n block detect > /etc/config/fstab --> detect fstab\n"
+block detect > /etc/config/fstab
+
+printf "\n vi /etc/config/fstab --> modify fstab file\n"
+vi /etc/config/fstab
+
+printf "\n*** Press enter to REBOOT ***"
+read -p " "
+
+reboot
+exit 0

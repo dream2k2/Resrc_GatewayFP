@@ -1,0 +1,79 @@
+#!/bin/sh
+# Copyright (C) 2024 Farmpro / Scott Lee
+
+printf "\n\n===[ Omega Setup Batch 3 ]==================="
+printf "\n>> Python3 Setup"
+
+printf "\n opkg update\n"
+opkg update
+
+
+printf "\n opkg install python3\n"
+opkg install python3
+
+
+printf "\n opkg install python3-pip\n"
+opkg install python3-pip
+
+
+printf "\n>> Python3 package Setup"
+printf "\n pip3 install pytz\n"
+pip3 install pytz
+
+
+printf "\n pip3 install pybgapi\n"
+pip3 install pybgapi
+
+
+printf "\n pip3 install requests\n"
+pip3 install requests
+
+
+printf "\n pip3 install flask\n"
+pip3 install flask
+
+
+printf "\n df -h\n"
+df -h
+
+printf "\n>> Farmpro Program copy"
+printf "\n cp -r /etc/setup/Gateway_swV2 /root\n"
+cp -r /etc/setup/Gateway_swV2 /root
+
+printf "\n cp -r /etc/setup/website /root\n"
+cp -r /etc/setup/website /root
+
+printf "\n cp -r /etc/setup/rc.local /etc\n"
+cp -r /etc/setup/rc.local /etc
+
+printf "\n>> /root/Gateway_swV2\n"
+ls /root/Gateway_swV2
+
+printf "\n>> /root/website\n"
+ls /root/website
+
+printf "\n>> /etc/rc.local & /root /etc/setup\n"
+ls /root 
+ls /etc/rc.local 
+ls /etc/setup
+
+printf "\n>> remove setup files\n"
+rm -rf /etc/setup
+
+printf "\n>> Omega LTE setup"
+printf "\n o2lte\n"
+o2lte
+
+printf "\n o2lte apn connect.cxn --> setup APN\n"
+o2lte apn connect.cxn
+
+printf "\n o2lte data enable\n"
+o2lte data enable
+
+printf "\n ++++ Setup Done ++++++\n"
+
+printf "\n*** Press enter to REBOOT ***"
+read -p " "
+
+reboot
+exit 0

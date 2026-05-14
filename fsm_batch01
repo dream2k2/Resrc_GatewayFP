@@ -1,0 +1,24 @@
+#!/bin/sh
+# Copyright (C) 2024 Farmpro / Scott Lee
+
+printf "\n\n===[ Omega Setup Batch 1 ]==================="
+printf "\n>>  Setup micro SD"
+
+printf "\n umount /dev/mmcblk0p1 --> unmount micro SD\n"
+umount /dev/mmcblk0p1
+
+printf "\n mkfs.ext4 /dev/mmcblk0p1  --> Make file system micro SD card\n"
+mkfs.ext4 /dev/mmcblk0p1
+
+printf "\n*** Press enter to continue... ***"
+read -p " "
+
+printf "\n mount /dev/mmcblk0p1 /mnt/ ; tar -C /overlay -cvf - . | tar -C /mnt/ -xf - ; umount /mnt/"
+printf "\n   --> Duplicating the /Overlay Directory\n"
+mount /dev/mmcblk0p1 /mnt/ ; tar -C /overlay -cvf - . | tar -C /mnt/ -xf - ; umount /mnt/
+
+printf "\n*** Press enter to REBOOT ***"
+read -p " "
+
+reboot
+exit 0
