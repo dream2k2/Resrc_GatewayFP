@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner Settings</title>
+</head>
+<body>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 10px;
+        }
+        table {
+            width: 100%;
+        }
+        th {
+            background-color: beige;
+            width: 30%;
+        }
+        td {
+            width: 70%;
+        }
+        input {
+            width: 98%;
+            height: 20px;
+        }
+        #apn_data > tbody > tr > th {
+            background-color: #eaf7e2;
+        }
+        #update_button {
+            padding: 10px 40px;
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: large;
+            cursor: pointer;
+            background-color: beige;
+            color: #000000;
+        }
+        #reload_button {
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: large;
+            cursor: pointer;
+            background-color: #eaf7e2;
+            color: #000000;
+            width: 65px;
+            height: 35px;
+        }
+        #get_button {
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: large;
+            cursor: pointer;
+            background-color: #eaf7e2;
+            color: #000000;
+            width: 65px;
+            height: 35px;
+        }
+    </style>
+    <main style="display: flex; justify-content : center;">
+        <div style="width: 80%;">
+            <h1 style="text-align: center;">
+                Scanner Settings
+                <button type="button" id="get_button" onclick="getData()">Get</button>
+                <button type="button" id="reload_button" onClick="window.location.reload()">Clear</button>
+            </h1>
+
+            <table id="apn_data"></table>
+            
+            <br />
+            
+            <form action="/" method="POST">
+
+                <table>
+                    {% if data %}
+                        <tbody>
+                            <tr>
+                                <th title="{{ data.GatewayID }}">GatewayID</th>
+                                <td><input type="text" name="GatewayID" value="{{data.GatewayID}}" /></td>
+                            </tr>
+                            <tr>
+                                <th title="ex. 14.63.173.116:80" style="cursor: pointer;">Server IP</th>
+                                <td title="{{data.Connect}}"><input type="text" name="connect" value="{{data.Connect.replace('http://', '').replace('/receiveJson_20211223.php', '')}}" /></td>
+                            </tr>
+                            <tr>
+                                <th>Latitude</th>
+                                <td><input type="text" name="latitude" value="{{data.latitude}}" /></td>
+                            </tr>
+                            <tr>
+                                <th>Longitude</th>
+                                <td><input type="text" name="longitude" value="{{data.longitude}}" /></td>
+                            </tr>
+
+                            <tr>
+                                <th>APN</th>
+                                <td><input type="text" name="apn" /></td>
+                            </tr>
+                        </tbody>
+                    {% endif %}
+                </table>
+
+                <div style="text-align: center; margin-top: 25px;" >
+                    <input type="hidden" name="button" value="modify" />
+                    <button type="submit" id="update_button">Update</button>
+                </div>
+
+            </form>
+
+            <div>
+                통신사 강제 설정
+            </div>
+            <form>
+                <select name="set_tel" id="set_tel" onchange="showfield(this.options[this.selectedIndex].value)">
+                    <option value="">Select</option>
+                    <option value="reset">reset</option>
+                    <option value="skt">SKT</option>
+                    <option value="kt">KT</option>
+                    <option value="Other">직접입력</option>
+                </select>
+
+                <button type="button" onclick="setTel()">설정</button>
+
+                <div id="other_box" style="display: none;">
+                    <input type="text" name="other_name" id="other_name"/>
+                    <p>예시</p>
+                    <p>AT+COPS=1,2,"45008",7</p>
+                    <p>AT+COPS=1,2,"45005",7</p>
+                    <p>참고자료</p>
+                    <img src="../static/src/img/others_image.png" width="1000px" />
+                </div>
+            </form>
+
+            <br />
+
+            <div>
+                인터넷 연결
+                {% if app_set %}
+                   [ {{app_set}} ]
+                {% endif %}
+            </div>
+            <form>
+                <select name="set_app" id="set_app">
+                    <option value="">Select</option>
+                    <option value="0">Ethernet</option>
+                    <option value="1">AT</option>
+                </select>
+                <button type="button" onclick="setApp()">설정</button>
+            </form>
+
+            {% if message %}
+                <script type="text/javascript">
+                    alert("{{message}}");
+                    window.location.href = '/'
+                </script>
+            {% endif %}
+
+            <script>
+                function getData() {
+                    fetch('/process', {
+                        method: 'POST',
+                    })
+                    .then((response) => {
+                        return response.text();
+                    })
+                    .then((html) => {
+                        document.getElementById("apn_data").innerHTML = html
+                    });
+                }
+
+                function showfield(name){
+
+                    if(name=='Other') {
+                        document.getElementById("other_box").style.display = "";
+                    } else {
+                        document.getElementById("other_box").style.display = "none";
+                    }
+
+                }
+
+
+                function setTel() {
+                    var set_tel = document.getElementById("set_tel").options[document.getElementById("set_tel").selectedIndex].value
+                    var other = document.getElementById("other_name").value
+
+                    if("" != set_tel) {
+
+                        if("Other" == set_tel) {
+                            if("" == other) {
+                                alert("빈칸에 입력해주세요.")
+                                return false
+                            }
+                        }
+
+                        if(confirm("설정하시겠습니까? \n확인 버튼 클릭 후 잠시만 기다려주세요.") == true) {
+    
+                            fetch('/setTel', {
+                                method: 'POST',
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    set_tel: set_tel,
+                                    other: other,
+                                }),
+                            })
+                            .then((response) => {
+                                alert("기기를 재부팅 하시길 바랍니다.");
+                                window.location.href = '/'
+                            })
+                            .catch(function(error) {
+                                alert(error)
+                            });
+                        }
+
+                        
+                        
+                    } else {
+                        alert("통신사 설정을 선택해주세요.")
+                    }
+                }
+
+                function setApp() {
+                    var set_app = document.getElementById("set_app").options[document.getElementById("set_app").selectedIndex].value
+
+                    if("" != set_app) {
+
+                        if(confirm("설정하시겠습니까? \n확인 버튼 클릭 후 잠시만 기다려주세요.") == true) {
+    
+                            fetch('/setApp', {
+                                method: 'POST',
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    set_app: set_app,
+                                }),
+                            })
+                            .then((response) => {
+                                alert("기기를 재부팅 하시길 바랍니다.");
+                                window.location.href = '/'
+                            })
+                            .catch(function(error) {
+                                alert(error)
+                            });
+                        }
+
+                    } else {
+                        alert("인터넷 연결 설정을 선택해주세요.")
+                    }
+                }
+
+            </script>
+
+        </div>
+    </main>
+</body>
+</html>
+
+
+
+

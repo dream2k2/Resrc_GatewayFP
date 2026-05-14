@@ -1,0 +1,24 @@
+{% if heart_data %}
+    <tbody>
+        <tr>
+            <th>APN</th>
+            <td>{{ heart_data.Data.APN }}</td>
+        </tr>
+        <tr>
+            <th>Network</th>
+            <td>{{ heart_data.Data.Network }}</td>
+        </tr>
+        <tr>
+            <th>IMEI</th>
+            <td>{{ heart_data.Data.IMEI }}</td>
+        </tr>
+        <tr>
+            <th>IMSI</th>
+            <td>{{ heart_data.Data.IMSI }}</td>
+        </tr>
+        <tr>
+            <th>DateTime</th>
+            <td>{{ heart_data.Data.DateTime }}</td>
+        </tr>       
+    </tbody>
+{% endif %}
