@@ -1,0 +1,6 @@
+{
+    "GatewayID" : "70B3D517CF000999",
+    "Connect" : "http://14.63.175.110:80/receiveJson_20211223.php",
+    "latitude": "37.387644",
+    "longitude": "126.639347"
+}
